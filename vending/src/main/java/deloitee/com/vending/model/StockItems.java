@@ -26,7 +26,6 @@ public class StockItems {
 	public void addProductInVending(Product product, int count) {
 		Integer productCount = productCount(product);
 		productMap.put(product, productCount + count);
-//		System.out.println("productMap after put   " + productMap);
 
 	}
 
@@ -34,7 +33,6 @@ public class StockItems {
 
 		Integer coinCount = coinCount(coin);
 		coinMap.put(coin, coinCount + count);
-//		System.out.println("coinMap after put   " + coinMap);
 	}
 
 	public void removeProductFromVending(Product product) {
@@ -60,7 +58,7 @@ public class StockItems {
 
 	private Integer productCount(Product product) {
 		Integer count = productMap.get(product);
-		return count == null ? 0: count;
+		return count == null ? 0 : count;
 	}
 
 	public boolean isCoinInVending(Coin coin) {
@@ -70,13 +68,12 @@ public class StockItems {
 
 	private Integer coinCount(Coin coin) {
 		Integer count = coinMap.get(coin);
-		return count== null ? 0: count;
+		return count == null ? 0 : count;
 	}
 
 	@Override
 	public String toString() {
 		return "StockItems [productMap=" + productMap + ", coinMap=" + coinMap + "]";
 	}
-	
 
 }

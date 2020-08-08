@@ -35,7 +35,8 @@ public class VendingMachineImpl implements VendingMachine {
 	private static Map<String, Integer> totalProductSoldMap = new ConcurrentHashMap<>();
 	private static Map<Coin, Integer> coinMap = new ConcurrentHashMap<>();
 
-	public static void main(String[] args) throws ProductNotAvailableException, CoinDescIsNotValidException, InsufficientMoneyException, ProductIsNotValidException {
+	public static void main(String[] args) throws ProductNotAvailableException, CoinDescIsNotValidException,
+			InsufficientMoneyException, ProductIsNotValidException {
 		initializeCoinHandler();
 		initializeVendingMachine();
 		new VendingMachineImpl().order();
@@ -55,16 +56,16 @@ public class VendingMachineImpl implements VendingMachine {
 		nickleHandler.setNextCoinHandler(dimeHandler);
 		dimeHandler.setNextCoinHandler(centHandler);
 	}
-	
+
 	public static void initializeVendingMachine() {
 
 		for (Coin c : Coin.values()) {
 			stockItems.addCoinInVending(c, 3);
 		}
-		// for (PRODUCT product : PRODUCT.values()) {
-		stockItems.addProductInVending(Product.CANDY, 2);
-		stockItems.addProductInVending(Product.COLDDRINK, 1);
-		// }
+		for (Product product : Product.values()) {
+			stockItems.addProductInVending(Product.CANDY, 2);
+			stockItems.addProductInVending(Product.COLDDRINK, 1);
+		}
 		System.out.println(" stockItems " + stockItems);
 
 	}
@@ -74,14 +75,12 @@ public class VendingMachineImpl implements VendingMachine {
 		orderMoney = orderMoney + Coin.coinValueOf(coinDesc).getValue();
 		System.out.println("insertCoin called!");
 		/*
-		Scanner sc = new Scanner(System.in);
-		System.out.println("do you want to insert more Coin if yes press YES or NO!");
-		String moreMoney = sc.nextLine();
-		if (moreMoney.equalsIgnoreCase("YES")) {
-			System.out.println("insert More coin!");
-			Scanner sc2 = new Scanner(System.in);
-			insertCoin(sc2.nextLine());
-		} */
+		 * Scanner sc = new Scanner(System.in);
+		 * System.out.println("do you want to insert more Coin if yes press YES or NO!"
+		 * ); String moreMoney = sc.nextLine(); if (moreMoney.equalsIgnoreCase("YES")) {
+		 * System.out.println("insert More coin!"); Scanner sc2 = new
+		 * Scanner(System.in); insertCoin(sc2.nextLine()); }
+		 */
 		System.out.println("Starting Transaction!!");
 
 		if (coinMap.containsKey(Coin.coinValueOf(coinDesc))) {
@@ -95,40 +94,44 @@ public class VendingMachineImpl implements VendingMachine {
 
 	}
 
-	public void order() throws CoinDescIsNotValidException, InsufficientMoneyException, ProductIsNotValidException, ProductNotAvailableException {
+	public void order() throws CoinDescIsNotValidException, InsufficientMoneyException, ProductIsNotValidException,
+			ProductNotAvailableException {
 		System.out.println("insert coin into Vending Machine!");
-		Scanner sc2 = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
 		System.out.println("type coin desc you want to enter into Vending Machine!");
-		insertCoin(sc2.nextLine());
-//		insertCoin("QUARTER");
+		insertCoin(sc.nextLine());
+		// insertCoin("QUARTER");
 		System.out.println("chooseProduct called!");
 		transaction = true;
-		Scanner sc = new Scanner(System.in);
+		Scanner sc2 = new Scanner(System.in);
 		System.out.println("choose product desc you want to get from Vending Machine!");
-		int productCode = Integer.parseInt(sc.nextLine());
+		int productCode = Integer.parseInt(sc2.nextLine());
 		chooseProduct(productCode);
+		sc.close();
+		sc2.close();
+
 	}
 
-	public void chooseProduct(int productCode) throws InsufficientMoneyException, ProductIsNotValidException,ProductNotAvailableException {
-		
+	public void chooseProduct(int productCode)
+			throws InsufficientMoneyException, ProductIsNotValidException, ProductNotAvailableException {
+
 		try {
-			Order order = null;
 			if (isValidProduct(productCode) && isProductAvailable(productCode)) {
 				try {
+					Order order = null;
 					if (isSufficientMoneyToBuyProduct(orderMoney, productCode)) {
 						System.out.println("Coolect your item and change!");
-						getProductAndChange(getProduct(productCode));
-						
+						order = getProductAndChange(getProduct(productCode));
+						System.out.println("Order is completed with Order Details as " + order);
+
 					}
-				}
-				catch (InsufficientMoneyException e) {
+				} catch (InsufficientMoneyException e) {
 					System.out.println("Error Message is : " + e.getMessage());
 					System.out.println("Enter more money to buy this Product ! ");
 					throw e;
 				}
 			}
-		} 
-		catch (ProductNotAvailableException  | ProductIsNotValidException e) {
+		} catch (ProductNotAvailableException | ProductIsNotValidException e) {
 			System.out.println("Error message is : " + e.getMessage());
 			System.out.println("Choose other available products in vending machine");
 			throw e;
@@ -178,7 +181,7 @@ public class VendingMachineImpl implements VendingMachine {
 		returnProduct(product);
 		quarterHandler.changeCoin(getBalanceAmount(product.getPrice()));
 		Order order = new Order(product, product.getPrice(), ++orderId, balanceMoney);
-		System.out.println("Order is completed with Order Details as " + order);
+		// System.out.println("Order is completed with Order Details as " + order);
 		transaction = false;
 		resetOrder();
 		return order;
